@@ -733,6 +733,10 @@ header ul li:before {
   text-align: center;
 }
 
+.contact-you input {
+  padding-left: 8px;
+}
+
 .overlay .popup-form {
   background: url(../img/modal.jpg) center no-repeat;
   background-size: cover;
