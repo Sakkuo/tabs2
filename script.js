@@ -243,63 +243,89 @@ window.addEventListener("DOMContentLoaded", function () {
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     form.appendChild(statusMessage);
-
-    let request = new XMLHttpRequest();
-    request.open("POST", "server.php");
-    request.setRequestHeader("Content-type", "application/json; charset=utf-8");
-
     let formData = new FormData(form);
-    let obj = {};
-    formData.forEach(function (value, key) {
-      obj[key] = value;
-    });
 
-    let json = JSON.stringify(obj);
-    request.send(json);
+    function postData(data) {
+      return new Promise(function(resolve, reject) {
 
-    request.addEventListener("readystatechange", function () {
-      if (request.readyState < 4) {
-        statusMessage.innerHTML = message.loading;
-      } else if (request.readyState === 4 && request.status == 200) {
-        statusMessage.innerHTML = message.success;
-      } else {
-        statusMessage.innerHTML = message.fail;
-      }
-    });
-    for (let i = 0; i < input.length; i++) {
-      input[i].value = "";
+        let request = new XMLHttpRequest();
+        request.open("POST", "server.php");
+        request.setRequestHeader("Content-type", "application/json; charset=utf-8");
+
+        let obj = {};
+        formData.forEach(function (value, key) {
+          obj[key] = value;
+        });
+
+        let json = JSON.stringify(obj);
+        request.send(json);
+
+        request.onreadystatechange = function () {
+          if (request.readyState < 4) {
+            resolve();
+          } else if (request.readyState === 4 && request.status == 200) {
+            resolve();
+          } else {
+            reject();
+          }
+        };
+        request.send(data);
+      });
     }
+    function clearInput() {
+      for (let i = 0; i < input.length; i++) {
+          input[i].value = "";
+        }
+    }
+    postData(formData)
+        .then(() => statusMessage.innerHTML = message.loading)
+        .then(() => statusMessage.innerHTML = message.success)
+        .catch(() => statusMessage.innerHTML = message.fail)
+        .then(clearInput);
+
   });
 
   form2.addEventListener("submit", function (e) {
     e.preventDefault();
     form2.appendChild(statusMessage);
-
-    let request = new XMLHttpRequest();
-    request.open("POST", "server.php");
-    request.setRequestHeader("Content-type", "application/json; charset=utf-8");
-
     let form2Data = new FormData(form2);
-    let obj2 = {};
-    form2Data.forEach(function (value, key) {
-      obj2[key] = value;
-    });
-    statusMessage.style.color = "white";
-    statusMessage.style.marginTop = "30px";
-    let json = JSON.stringify(obj2);
-    request.send(json);
 
-    request.addEventListener("readystatechange", function () {
-      if (request.readyState < 4) {
-        statusMessage.innerHTML = message.loading;
-      } else if (request.readyState === 4 && request.status == 200) {
-        statusMessage.innerHTML = message.success;
-      } else {
-        statusMessage.innerHTML = message.fail;
-      }
-    });
-    for (let i = 0; i < input.length; i++) {
-      input[i].value = "";
+    function postData (data) {
+      return new Promise(function(resolve, request) {
+        let request2 = new XMLHttpRequest();
+        request2.open("POST", "server.php");
+        request2.setRequestHeader("Content-type", "application/json; charset=utf-8");
+    
+        let obj2 = {};
+        form2Data.forEach(function (value, key) {
+          obj2[key] = value;
+        });
+        statusMessage.style.color = "white";
+        statusMessage.style.marginTop = "30px";
+        let json = JSON.stringify(obj2);
+        request.send(json);
+    
+        request.onreadystatechange = function () {
+          if (request2.readyState < 4) {
+            resolve();
+          } else if (request2.readyState === 4 && request2.status == 200) {
+            resolve();
+          } else {
+            reject();
+          }
+        };
+        request.send(data);
+      });
     }
+    function clearInput() {
+      for (let i = 0; i < input.length; i++) {
+        input[i].value = "";
+      }
+    }
+    postData(form2Data)
+        .then(() => statusMessage.innerHTML = message.loading)
+        .then(() => statusMessage.innerHTML = message.success)
+        .catch(() => statusMessage.innerHTML = message.fail)
+        .then(clearInput);
   });
 });
